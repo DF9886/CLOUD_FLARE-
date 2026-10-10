@@ -2,80 +2,41 @@ const input = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 const chat = document.querySelector(".chat");
 
-function addMessage(text, type) {
-    const message = document.createElement("div");
-    message.style.width = "100%";
-    message.style.maxWidth = "800px";
-    message.style.margin = "0 auto 18px";
-    message.style.display = "flex";
-    message.style.justifyContent = type === "user" ? "flex-end" : "flex-start";
-
-    const bubble = document.createElement("div");
-    bubble.textContent = text;
-    bubble.style.maxWidth = "80%";
-    bubble.style.padding = "12px 16px";
-    bubble.style.borderRadius = "18px";
-    bubble.style.fontSize = "16px";
-    bubble.style.lineHeight = "1.5";
-
-    if (type === "user") {
-        bubble.style.background = "#222";
-        bubble.style.color = "#fff";
-    } else {
-        bubble.style.background = "#f1f1f1";
-        bubble.style.color = "#222";
-    }
-
-    message.appendChild(bubble);
-    chat.appendChild(message);
-    chat.scrollTop = chat.scrollHeight;
-}
-
 async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    addMessage(text, "user");
+    const userDiv = document.createElement("div");
+    userDiv.textContent = text;
+    userDiv.style.textAlign = "right";
+    userDiv.style.margin = "10px";
+    chat.appendChild(userDiv);
     input.value = "";
 
-    const loadingMsg = document.createElement("div");
-    loadingMsg.textContent = "Печатает...";
-    loadingMsg.style.padding = "12px 16px";
-    loadingMsg.style.background = "#f1f1f1";
-    loadingMsg.style.borderRadius = "18px";
-    loadingMsg.style.maxWidth = "80%";
-    loadingMsg.style.margin = "0 auto 18px";
-    chat.appendChild(loadingMsg);
-
     try {
-        const response = await fetch('https://houndlerii.huyguybbb.workers.dev', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("https://houndlerii.huyguybbb.workers.dev", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: text })
         });
-
-        const data = await response.json();
-
-        chat.removeChild(loadingMsg);
-
-        if (data.reply) {
-            addMessage(data.reply, "ai");
-        } else if (data.error) {
-            addMessage("Ошибка: " + data.error, "ai");
-        } else {
-            addMessage("Не удалось получить ответ.", "ai");
-        }
-
-    } catch (error) {
-        chat.removeChild(loadingMsg);
-        addMessage("Ошибка сети. Проверь, работает ли Worker.", "ai");
+        
+        const rawText = await response.text();
+        
+        const botDiv = document.createElement("div");
+        botDiv.style.textAlign = "left";
+        botDiv.style.margin = "10px";
+        botDiv.style.color = "red";
+        botDiv.textContent = "Ответ сервера: " + rawText;
+        chat.appendChild(botDiv);
+        
+    } catch (e) {
+        const errDiv = document.createElement("div");
+        errDiv.textContent = "Ошибка сети: " + e.message;
+        chat.appendChild(errDiv);
     }
 }
 
 sendButton.addEventListener("click", sendMessage);
-input.addEventListener("keydown", function(event) {
-    if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
-    }
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMessage();
 });
