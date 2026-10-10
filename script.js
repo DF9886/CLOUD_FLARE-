@@ -2,7 +2,6 @@ const input = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 const chat = document.querySelector(".chat");
 
-// Функция добавления сообщения на экран
 function addMessage(text, type) {
     const message = document.createElement("div");
     message.style.width = "100%";
@@ -29,22 +28,26 @@ function addMessage(text, type) {
 
     message.appendChild(bubble);
     chat.appendChild(message);
-    chat.scrollTop = chat.scrollHeight; // Прокрутка вниз
+    chat.scrollTop = chat.scrollHeight;
 }
 
-// Функция отправки сообщения
 async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    addMessage(text, "user"); // Показываем сообщение пользователя
-    input.value = ""; // Очищаем поле ввода
+    addMessage(text, "user");
+    input.value = "";
 
-    // Показываем, что бот "печатает"
-    addMessage("Печатает...", "ai");
+    const loadingMsg = document.createElement("div");
+    loadingMsg.textContent = "Печатает...";
+    loadingMsg.style.padding = "12px 16px";
+    loadingMsg.style.background = "#f1f1f1";
+    loadingMsg.style.borderRadius = "18px";
+    loadingMsg.style.maxWidth = "80%";
+    loadingMsg.style.margin = "0 auto 18px";
+    chat.appendChild(loadingMsg);
 
     try {
-        // Отправляем запрос на твой Cloudflare Worker
         const response = await fetch('https://houndlerii.huyguybbb.workers.dev', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -53,8 +56,7 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        // Удаляем сообщение "Печатает..."
-        chat.removeChild(chat.lastChild);
+        chat.removeChild(loadingMsg);
 
         if (data.reply) {
             addMessage(data.reply, "ai");
@@ -65,12 +67,11 @@ async function sendMessage() {
         }
 
     } catch (error) {
-        chat.removeChild(chat.lastChild);
-        addMessage("Ошибка сети: проверьте соединение.", "ai");
+        chat.removeChild(loadingMsg);
+        addMessage("Ошибка сети. Проверь, работает ли Worker.", "ai");
     }
 }
 
-// Обработчики событий
 sendButton.addEventListener("click", sendMessage);
 input.addEventListener("keydown", function(event) {
     if (event.key === "Enter" && !event.shiftKey) {
