@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Houndler</title>
     
-    <!-- ДЛЯ РАБОТЫ КАК ПРИЛОЖЕНИЕ -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4712/4712035.png">
@@ -65,32 +64,29 @@
             overscroll-behavior: none;
         }
         
-        /* Стили для фона чата, если выбраны обои */
         .chat-container.has-bg {
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
         }
-        /* Затемнение фона, чтобы текст читался */
         .chat-container.has-bg::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.3); /* Можно менять прозрачность */
+            background: rgba(0,0,0,0.3);
             z-index: 0;
             pointer-events: none;
         }
         .chat-container.has-bg .message, 
         .chat-container.has-bg .center-text {
             position: relative;
-            z-index: 1; /* Чтобы сообщения были поверх затемнения */
+            z-index: 1;
         }
 
         header { background-color: var(--header-bg); padding: 15px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; transition: background 0.3s, border-color 0.3s; }
         .menu-btn { cursor: pointer; font-size: 24px; user-select: none; color: var(--text-color); }
         .user-icon { width: 30px; height: 30px; background-color: var(--accent-color); border-radius: 50%; transition: background 0.3s; }
         
-        /* Боковая панель */
         .sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background-color: var(--header-bg); z-index: 20; transition: left 0.3s ease, background 0.3s; padding: 20px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 15; display: none; }
@@ -111,7 +107,6 @@
         .theme-toggle-btn, .bg-upload-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; transition: all 0.3s; margin-top: 10px; text-align: center; display: block; }
         .theme-toggle-btn:hover, .bg-upload-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
         
-        /* Чат */
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; position: relative; }
         .center-text { text-align: center; margin-top: 10vh; }
         .center-text h1 { font-size: 28px; margin-bottom: 10px; color: var(--text-color); }
@@ -123,7 +118,7 @@
         
         .warning-text { margin-top: 25px; font-size: 13px; color: var(--warning-color); background-color: rgba(128, 128, 128, 0.1); padding: 10px 15px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; text-align: left; max-width: 350px; line-height: 1.4; }
         
-        .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); /* Легкое размытие под сообщениями, чтобы читалось на фоне обоев */ }
+        .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .message.user { background-color: var(--user-msg-bg); color: var(--user-msg-text); align-self: flex-end; border-bottom-right-radius: 4px; opacity: 0.95; }
         .message.ai { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); align-self: flex-start; border-bottom-left-radius: 4px; opacity: 0.95; }
@@ -156,17 +151,9 @@
             <h3 style="margin-top: 0; margin-bottom: 10px;">Настройки</h3>
             <button class="theme-toggle-btn" onclick="toggleTheme()">🌓 Сменить тему</button>
             
-            <!-- СКРЫТЫЙ INPUT ДЛЯ ВЫБОРА ФОТО -->
             <input type="file" id="bg-upload" accept="image/*" style="display: none;" onchange="handleBgUpload(event)">
-            
-            <!-- КНОПКА ВЫЗОВА ВЫБОРА ФОТО -->
-            <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">
-                🖼️ Добавить свои обои
-            </button>
-            
-            <button class="bg-upload-btn" onclick="resetBg()" style="font-size: 12px; padding: 5px; opacity: 0.7;">
-                Сбросить обои
-            </button>
+            <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">🖼️ Добавить свои обои</button>
+            <button class="bg-upload-btn" onclick="resetBg()" style="font-size: 12px; padding: 5px; opacity: 0.7;">Сбросить обои</button>
         </div>
     </div>
 
@@ -210,15 +197,11 @@
         const messageInput = document.getElementById('message-input');
         const historyList = document.getElementById('chat-history-list');
 
-        // Загрузка темы
         const savedTheme = localStorage.getItem('my_ai_theme');
         if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); }
 
-        // Загрузка обоев при старте
         const savedBg = localStorage.getItem('my_ai_bg');
-        if (savedBg) {
-            applyBackground(savedBg);
-        }
+        if (savedBg) { applyBackground(savedBg); }
 
         let allChats = JSON.parse(localStorage.getItem('my_ai_chats')) || [];
         let currentChatId = null;
@@ -298,7 +281,6 @@
             localStorage.setItem('my_ai_theme', newTheme);
         }
 
-        // --- ЛОГИКА ДЛЯ ОБОЕВ ---
         function applyBackground(base64Image) {
             chatContainer.classList.add('has-bg');
             chatContainer.style.backgroundImage = `url(${base64Image})`;
@@ -307,20 +289,12 @@
         function handleBgUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 const base64Image = e.target.result;
-                // Временно применяем, чтобы пользователь увидел
                 applyBackground(base64Image);
-                
-                try {
-                    // Сохраняем в память
-                    localStorage.setItem('my_ai_bg', base64Image);
-                } catch (error) {
-                    alert("Ошибка: Картинка слишком большая для сохранения в памяти телефона. Выберите файл поменьше.");
-                    console.error(error);
-                }
+                try { localStorage.setItem('my_ai_bg', base64Image); } 
+                catch (error) { alert("Ошибка: Картинка слишком большая для сохранения. Выберите файл поменьше."); }
             };
             reader.readAsDataURL(file);
         }
@@ -330,7 +304,6 @@
             chatContainer.classList.remove('has-bg');
             chatContainer.style.backgroundImage = 'none';
         }
-        // -------------------------
 
         function useSuggestion(text) { messageInput.value = text; sendMessage(); }
 
@@ -340,8 +313,11 @@
             if (!currentChatId) { startNewChat(); }
             const chat = allChats.find(c => c.id === currentChatId);
             if (chat.messages.length === 0) { chat.title = text.substring(0, 20) + (text.length > 20 ? '...' : ''); }
+            
+            // Добавляем сообщение пользователя в историю
             chat.messages.push({ sender: 'user', text: text });
             saveChats();
+            
             if (welcomeScreen.parentNode) welcomeScreen.style.display = 'none';
             renderMessageBubble(text, 'user');
             messageInput.value = '';
@@ -349,14 +325,41 @@
 
             try {
                 const isImageRequest = /нарисуй|сген|созд|картин|фото|изображ|арт|picture|draw/i.test(text.toLowerCase());
-                const payload = { message: text, type: isImageRequest ? "image" : "text" };
+                
+                // --- ЛОГИКА ПАМЯТИ (ВСЯ ИСТОРИЯ С ЗАЩИТОЙ) ---
+                let historyToSend = [];
+                let currentLength = 0;
+                // Идем с конца (самые свежие сообщения)
+                for (let i = chat.messages.length - 1; i >= 0; i--) {
+                    const msg = chat.messages[i];
+                    if (msg.image) continue; // Пропускаем картинки (ИИ не читает base64)
+                    
+                    const msgLength = msg.text.length;
+                    // Ограничение в 6000 символов, чтобы ИИ не упал от переполнения
+                    if (currentLength + msgLength > 6000) break;
+                    
+                    historyToSend.unshift({
+                        role: msg.sender === 'user' ? 'user' : 'assistant',
+                        content: msg.text
+                    });
+                    currentLength += msgLength;
+                }
+
+                const payload = { 
+                    message: text, 
+                    type: isImageRequest ? "image" : "text",
+                    history: historyToSend // <--- Отправляем память!
+                };
+
                 const response = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                
                 const data = await response.json();
                 removeElement(loadingId);
+                
                 if (data.type === "image" && data.imageBase64) {
                     const imageUrl = `data:image/jpeg;base64,${data.imageBase64}`;
                     const caption = data.translatedPrompt ? `Перевод запроса: ${data.translatedPrompt}` : "";
@@ -432,14 +435,9 @@
         renderHistory();
         if (allChats.length > 0) { loadChat(allChats[0].id); } else { startNewChat(); }
 
-        // РЕГИСТРАЦИЯ SERVICE WORKER
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(registration => {
-                    console.log('SW registered: ', registration);
-                }).catch(registrationError => {
-                    console.log('SW registration failed: ', registrationError);
-                });
+                navigator.serviceWorker.register('sw.js').catch(e => console.log(e));
             });
         }
     </script>
