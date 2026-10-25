@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Houndler</title>
     
-    <!-- ДОБАВЛЕНО ДЛЯ РАБОТЫ КАК ПРИЛОЖЕНИЕ -->
+    <!-- ДЛЯ РАБОТЫ КАК ПРИЛОЖЕНИЕ -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4712/4712035.png">
@@ -32,6 +32,7 @@
             --accent-color: #d32f2f;
             --btn-bg: #d32f2f;
             --btn-text: #ffffff;
+            --warning-color: #d32f2f;
         }
         [data-theme="dark"] {
             --bg-color: #0a0a0a;
@@ -50,6 +51,7 @@
             --accent-color: #00e676;
             --btn-bg: #00e676;
             --btn-text: #000000;
+            --warning-color: #69f0ae; /* В темной теме предупреждение салатовое, чтобы выделялось */
         }
         * { box-sizing: border-box; }
         body {
@@ -59,7 +61,7 @@
             color: var(--text-color);
             display: flex; flex-direction: column; height: 100vh;
             transition: background 0.3s, color 0.3s;
-            overscroll-behavior: none; /* Отключает оттягивание страницы */
+            overscroll-behavior: none;
         }
         header { background-color: var(--header-bg); padding: 15px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; transition: background 0.3s, border-color 0.3s; }
         .menu-btn { cursor: pointer; font-size: 24px; user-select: none; color: var(--text-color); }
@@ -81,12 +83,29 @@
         .theme-toggle-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; transition: all 0.3s; }
         .theme-toggle-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; }
-        .center-text { text-align: center; margin-top: 15vh; }
+        .center-text { text-align: center; margin-top: 10vh; } /* Чуть поднял, чтобы влезло предупреждение */
         .center-text h1 { font-size: 28px; margin-bottom: 10px; color: var(--text-color); }
         .center-text p { color: var(--text-muted); font-size: 16px; margin-bottom: 30px; }
         .suggestions-container { display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; max-width: 400px; margin: 0 auto; }
         .suggestion-bubble { background-color: var(--suggestion-bg); border: 1px solid var(--suggestion-border); color: var(--text-color); padding: 12px 20px; border-radius: 20px; font-size: 15px; cursor: pointer; transition: all 0.2s ease; width: 100%; text-align: center; }
         .suggestion-bubble:hover { background-color: var(--suggestion-hover); border-color: var(--accent-color); }
+        
+        /* СТИЛЬ ДЛЯ ПРЕДУПРЕЖДЕНИЯ */
+        .warning-text {
+            margin-top: 25px;
+            font-size: 13px;
+            color: var(--warning-color);
+            background-color: rgba(128, 128, 128, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+            max-width: 350px;
+            line-height: 1.4;
+        }
+        
         .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .message.user { background-color: var(--user-msg-bg); color: var(--user-msg-text); align-self: flex-end; border-bottom-right-radius: 4px; }
@@ -135,6 +154,15 @@
                 <div class="suggestion-bubble" onclick="useSuggestion('Что приготовить на ужин?')">Что приготовить?</div>
                 <div class="suggestion-bubble" onclick="useSuggestion('Чем заняться в выходные?')">Чем заняться?</div>
             </div>
+            
+            <!-- ДОБАВЛЕНО ПРЕДУПРЕЖДЕНИЕ -->
+            <div style="text-align: center;">
+                <div class="warning-text">
+                    <span>⚠️</span>
+                    <span>Не советуем обновлять сайт или закрывать вкладку, иначе ваши чаты удалятся.</span>
+                </div>
+            </div>
+
         </div>
     </div>
 
