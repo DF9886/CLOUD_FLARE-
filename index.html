@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My AI</title>
+    <title>Houndler</title>
     <style>
         /* --- ЦВЕТОВЫЕ СХЕМЫ --- */
         :root {
             /* Светлая тема: Бело-Красная */
-            --bg-color: #ffffff; /* Белый фон */
+            --bg-color: #ffffff;
             --header-bg: #f8f9fa;
             --text-color: #111111;
             --text-muted: #666666;
             --border-color: #e0e0e0;
-            --user-msg-bg: #ffebee; /* Очень светлый красный для сообщений пользователя */
+            --user-msg-bg: #ffebee;
             --user-msg-text: #b71c1c;
             --ai-msg-bg: #f5f5f5;
             --ai-msg-text: #111111;
@@ -21,7 +21,7 @@
             --suggestion-bg: #ffffff;
             --suggestion-border: #ffcccc;
             --suggestion-hover: #ffebee;
-            --accent-color: #d32f2f; /* Ярко-красный для кнопок */
+            --accent-color: #d32f2f;
             --accent-text: #ffffff;
             --btn-bg: #d32f2f;
             --btn-text: #ffffff;
@@ -29,20 +29,20 @@
 
         [data-theme="dark"] {
             /* Темная тема: Черно-Зеленая (Игровая) */
-            --bg-color: #0a0a0a; /* Почти черный */
+            --bg-color: #0a0a0a;
             --header-bg: #121212;
-            --text-color: #e0f2e9; /* Светло-зеленоватый текст */
+            --text-color: #e0f2e9;
             --text-muted: #88a899;
-            --border-color: #1e3b2e; /* Темно-зеленая рамка */
-            --user-msg-bg: #003b1f; /* Темно-зеленый для сообщений пользователя */
-            --user-msg-text: #69f0ae; /* Яркий неон-зеленый текст */
-            --ai-msg-bg: #121f18; /* Темный фон для ИИ */
+            --border-color: #1e3b2e;
+            --user-msg-bg: #003b1f;
+            --user-msg-text: #69f0ae;
+            --ai-msg-bg: #121f18;
             --ai-msg-text: #e0f2e9;
             --input-bg: #121212;
             --suggestion-bg: #121212;
             --suggestion-border: #1e3b2e;
             --suggestion-hover: #003b1f;
-            --accent-color: #00e676; /* Неоново-зеленый */
+            --accent-color: #00e676;
             --accent-text: #000000;
             --btn-bg: #00e676;
             --btn-text: #000000;
@@ -223,13 +223,15 @@
 
     <header>
         <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-        <div>My AI</div>
+        <!-- ТУТ ИЗМЕНЕНО НАЗВАНИЕ КОМПАНИИ -->
+        <div>Houndler</div>
         <div class="user-icon"></div>
     </header>
 
     <div class="chat-container" id="chat-container">
         <div class="center-text" id="welcome-screen">
-            <h1>Чем я могу помочь?</h1>
+            <!-- ТУТ ТОЖЕ ДОБАВЛЕНО НАЗВАНИЕ ДЛЯ КРАСОТЫ -->
+            <h1>Чем Houndler может помочь?</h1>
             <p>Задай любой вопрос или попроси нарисовать картинку.</p>
             
             <div class="suggestions-container">
@@ -245,7 +247,7 @@
             <input type="text" id="message-input" placeholder="Напишите сообщение..." onkeypress="handleKeyPress(event)">
             <button class="send-btn" onclick="sendMessage()">➤</button>
         </div>
-        <div class="disclaimer">My AI может допускать ошибки.</div>
+        <div class="disclaimer">Houndler может допускать ошибки.</div>
     </div>
 
     <script>
@@ -256,7 +258,6 @@
         const messageInput = document.getElementById('message-input');
         const historyList = document.getElementById('chat-history-list');
 
-        // Загружаем сохраненную тему при запуске
         const savedTheme = localStorage.getItem('my_ai_theme');
         if (savedTheme) {
             document.body.setAttribute('data-theme', savedTheme);
@@ -361,7 +362,7 @@
             const isDark = document.body.getAttribute('data-theme') === 'dark';
             const newTheme = isDark ? 'light' : 'dark';
             document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('my_ai_theme', newTheme); // Запоминаем выбор
+            localStorage.setItem('my_ai_theme', newTheme);
         }
 
         function useSuggestion(text) {
@@ -486,7 +487,7 @@
             const div = document.createElement('div');
             div.id = id;
             div.classList.add('message', 'loading');
-            div.textContent = "Думает... (для картинок до 15 сек)";
+            div.textContent = "Houndler думает...";
             chatContainer.appendChild(div);
             scrollToBottom();
             return id;
@@ -495,7 +496,6 @@
         function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
         function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
 
-        // Инициализация
         renderHistory();
         if (allChats.length > 0) {
             loadChat(allChats[0].id);
