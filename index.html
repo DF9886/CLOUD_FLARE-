@@ -45,7 +45,7 @@
         
         /* Боковая панель */
         .sidebar {
-            position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%;
             background-color: var(--header-bg); z-index: 20;
             transition: left 0.3s ease; padding: 20px; border-right: 1px solid var(--border-color);
             display: flex; flex-direction: column;
@@ -57,12 +57,24 @@
         }
         .sidebar-overlay.open { display: block; }
         .sidebar h3 { margin-top: 0; font-size: 14px; color: #888; text-transform: uppercase; }
-        .sidebar-item {
-            padding: 12px 10px; border-radius: 8px; cursor: pointer;
+        
+        /* Строка истории с кнопкой удаления */
+        .chat-history-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px; border-radius: 8px; cursor: pointer;
             margin-bottom: 5px; font-size: 15px;
         }
-        .sidebar-item:hover { background: rgba(128,128,128,0.2); }
-        .sidebar-item.active { background: rgba(128,128,128,0.3); font-weight: bold; }
+        .chat-history-item:hover { background: rgba(128,128,128,0.2); }
+        .chat-history-item.active { background: rgba(128,128,128,0.3); font-weight: bold; }
+        .chat-title-text {
+            flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .delete-btn {
+            background: none; border: none; color: #ff4d4d; font-size: 16px;
+            cursor: pointer; padding: 0 5px; opacity: 0.6; transition: opacity 0.2s;
+        }
+        .delete-btn:hover { opacity: 1; transform: scale(1.1); }
+
         .new-chat-btn {
             background: var(--text-color); color: var(--bg-color);
             border: none; padding: 12px; border-radius: 8px; cursor: pointer;
@@ -183,16 +195,60 @@
         function renderHistory() {
             historyList.innerHTML = '';
             allChats.forEach(chat => {
-                const div = document.createElement('div');
-                div.className = `sidebar-item ${chat.id === currentChatId ? 'active' : ''}`;
-                div.textContent = chat.title;
-                div.onclick = () => loadChat(chat.id);
-                historyList.appendChild(div);
+                // Создаем контейнер для строки
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `chat-history-item ${chat.id === currentChatId ? 'active' : ''}`;
+                
+                // Название чата
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'chat-title-text';
+                titleSpan.textContent = chat.title;
+                
+                // Кнопка удаления
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.innerHTML = '🗑️';
+                delBtn.title = "Удалить чат";
+                
+                // Клик по строке = загрузка чата
+                itemDiv.onclick = (e) => {
+                    // Если кликнули не по кнопке удаления
+                    if (e.target !== delBtn) {
+                        loadChat(chat.id);
+                    }
+                };
+
+                // Клик по кнопке удаления
+                delBtn.onclick = (e) => {
+                    e.stopPropagation(); // Останавливаем всплытие, чтобы чат не открылся
+                    deleteChat(chat.id);
+                };
+
+                itemDiv.appendChild(titleSpan);
+                itemDiv.appendChild(delBtn);
+                historyList.appendChild(itemDiv);
             });
         }
 
+        function deleteChat(id) {
+            // Спрашиваем подтверждение
+            if (confirm("Вы уверены, что хотите удалить этот чат?")) {
+                // Оставляем только те чаты, ID которых не совпадает с удаляемым
+                allChats = allChats.filter(chat => chat.id !== id);
+                
+                // Если мы удалили чат, который был открыт
+                if (currentChatId === id) {
+                    currentChatId = null;
+                    chatContainer.innerHTML = '';
+                    chatContainer.appendChild(welcomeScreen);
+                    welcomeScreen.style.display = 'block';
+                }
+                
+                saveChats();
+            }
+        }
+
         function startNewChat() {
-            // Если текущий чат пустой, не создаем новый
             if (currentChatId) {
                 const currentChat = allChats.find(c => c.id === currentChatId);
                 if (currentChat && currentChat.messages.length === 0) {
@@ -210,7 +266,6 @@
             currentChatId = newChat.id;
             saveChats();
             
-            // Очищаем экран и показываем приветствие
             chatContainer.innerHTML = '';
             chatContainer.appendChild(welcomeScreen);
             welcomeScreen.style.display = 'block';
@@ -254,12 +309,10 @@
             const text = messageInput.value.trim();
             if (!text) return;
 
-            // Если чата нет, создаем новый
             if (!currentChatId) { startNewChat(); }
 
             const chat = allChats.find(c => c.id === currentChatId);
             
-            // Генерируем название, если это первое сообщение
             if (chat.messages.length === 0) {
                 chat.title = text.substring(0, 20) + (text.length > 20 ? '...' : '');
             }
@@ -274,7 +327,7 @@
 
             try {
                 // Проверяем, просит ли пользователь картинку
-                const isImageRequest = /нарисуй|сгенерируй|фото|картинк|изображени/i.test(text);
+                const isImageRequest = /нарисуй|сген|созд|картин|фото|изображ|арт|picture|draw/i.test(text.toLowerCase());
                 
                 const payload = {
                     message: text,
@@ -291,9 +344,9 @@
                 removeElement(loadingId);
 
                 if (data.type === "image" && data.imageBase64) {
-                    // Отрисовка картинки
                     const imageUrl = `data:image/jpeg;base64,${data.imageBase64}`;
-                    renderMessageBubble("Вот ваша картинка:", 'ai', imageUrl);
+                    const caption = data.translatedPrompt ? `Перевод запроса: ${data.translatedPrompt}` : "";
+                    renderMessageBubble(caption, 'ai', imageUrl);
                     chat.messages.push({ sender: 'ai', text: "Сгенерированное изображение", image: imageUrl });
                 } else if (data.response) {
                     renderMessageBubble(data.response, 'ai');
@@ -305,7 +358,7 @@
 
             } catch (error) {
                 removeElement(loadingId);
-                renderMessageBubble("Ошибка сети. Генерация картинки может занимать до 15 секунд. Попробуйте еще раз.", 'ai');
+                renderMessageBubble("Ошибка сети. Попробуйте еще раз.", 'ai');
                 console.error(error);
             }
         }
@@ -353,6 +406,8 @@
                     const p = document.createElement('p');
                     p.textContent = text;
                     p.style.margin = '10px 0 0 0';
+                    p.style.fontSize = '12px';
+                    p.style.color = '#888';
                     div.appendChild(p);
                 }
             } else {
