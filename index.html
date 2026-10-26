@@ -129,7 +129,6 @@
         .theme-toggle-btn, .bg-upload-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; transition: all 0.3s; margin-top: 10px; text-align: center; display: block; }
         .theme-toggle-btn:hover, .bg-upload-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
-        /* --- СТИЛИ ДЛЯ РЕЖИМОВ --- */
         .mode-selector { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
         .mode-option { padding: 10px; border: 1px solid var(--mode-border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 14px; background-color: var(--mode-bg); color: var(--text-color); transition: all 0.2s; }
         .mode-option.active { background-color: var(--mode-active-bg); color: var(--mode-active-text); border-color: var(--mode-active-bg); font-weight: bold; }
@@ -158,7 +157,6 @@
         .image-actions button { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
         .image-actions button:hover { border-color: var(--accent-color); color: var(--accent-color); }
         
-        /* --- СТИЛИ ДЛЯ ВЫБОРА ФОТО --- */
         .input-area { padding: 15px; border-top: 1px solid var(--border-color); background: var(--bg-color); transition: background 0.3s; }
         .selected-images-preview { display: flex; gap: 10px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
         .preview-item { position: relative; flex-shrink: 0; }
@@ -173,7 +171,6 @@
         button.send-btn:hover { opacity: 0.9; }
         .disclaimer { font-size: 12px; color: var(--text-muted); margin-top: 10px; text-align: center; }
 
-        /* --- СТИЛИ ДЛЯ БЛОКОВ КОДА --- */
         .code-block-wrapper { background-color: var(--code-bg); border-radius: 8px; margin: 10px 0; overflow: hidden; border: 1px solid var(--border-color); }
         .code-header { background-color: var(--code-header-bg); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #888; font-family: monospace; }
         .code-header span { text-transform: uppercase; font-weight: bold; }
@@ -202,7 +199,6 @@
             <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">🖼️ Добавить свои обои</button>
             <button class="bg-upload-btn" onclick="resetBg()" style="font-size: 12px; padding: 5px; opacity: 0.7;">Сбросить обои</button>
 
-            <!-- БЛОК РЕЖИМОВ -->
             <h3 style="margin-top: 20px; margin-bottom: 5px; font-size: 12px;">Режимы</h3>
             <div class="mode-selector" id="mode-selector">
                 <div class="mode-option" id="mode-standard" onclick="setMode('standard')">📝 Стандарт</div>
@@ -219,10 +215,8 @@
         <div class="user-icon"></div>
     </header>
 
-    <!-- Основной контейнер чата -->
-    <div class="chat-container" id="chat-container">
-        <!-- Приветствие будет создано скриптом -->
-    </div>
+    <!-- Основной контейнер чата, приветствие добавляется скриптом -->
+    <div class="chat-container" id="chat-container"></div>
 
     <div class="input-area">
         <div class="selected-images-preview" id="preview-container"></div>
@@ -347,7 +341,7 @@
                 if (currentChatId === id) {
                     currentChatId = null;
                     chatContainer.innerHTML = '';
-                    chatContainer.appendChild(createWelcomeScreen()); // Возвращаем приветствие
+                    chatContainer.appendChild(createWelcomeScreen());
                     unlockModes();
                 }
                 saveChats();
@@ -364,8 +358,8 @@
             currentChatId = newChat.id;
             saveChats();
             
-            chatContainer.innerHTML = ''; // Очищаем всё
-            chatContainer.appendChild(createWelcomeScreen()); // Добавляем приветствие
+            chatContainer.innerHTML = ''; 
+            chatContainer.appendChild(createWelcomeScreen());
             
             selectedImages = [];
             renderPreview();
@@ -376,15 +370,14 @@
         function loadChat(id) {
             currentChatId = id;
             const chat = allChats.find(c => c.id === id);
-            chatContainer.innerHTML = ''; // Очищаем всё
+            chatContainer.innerHTML = ''; 
             selectedImages = [];
             renderPreview();
             
             if (!chat || chat.messages.length === 0) {
-                chatContainer.appendChild(createWelcomeScreen()); // Если пусто — показываем приветствие
+                chatContainer.appendChild(createWelcomeScreen());
                 unlockModes();
             } else {
-                // Если есть история — приветствие НЕ добавляем
                 chat.messages.forEach(msg => { renderMessageBubble(msg.text, msg.sender, msg.image, msg.images); });
                 lockModes(chat.mode || 'standard');
             }
@@ -471,14 +464,14 @@
             if (!currentChatId) { startNewChat(); }
             const chat = allChats.find(c => c.id === currentChatId);
             
+            // --- ЖЕЛЕЗОБЕТОННОЕ УДАЛЕНИЕ ПРИВЕТСТВИЯ ---
             if (chat.messages.length === 0) {
                 chat.title = text ? (text.substring(0, 20) + (text.length > 20 ? '...' : '')) : "Фото";
                 chat.mode = currentMode; 
                 lockModes(currentMode); 
                 
-                // УДАЛЯЕМ ПРИВЕТСТВИЕ (чтобы оно не висело над первым сообщением)
-                const welcome = document.getElementById('welcome-screen');
-                if (welcome) welcome.remove();
+                // Очищаем контейнер полностью (удаляем приветствие и подсказки)
+                chatContainer.innerHTML = ''; 
             }
             
             const userMessage = { 
@@ -489,6 +482,7 @@
             chat.messages.push(userMessage);
             saveChats();
             
+            // Рисуем сообщение пользователя (оно будет первым в пустом контейнере)
             renderMessageBubble(userMessage.text, 'user', null, userMessage.images);
             
             messageInput.value = '';
