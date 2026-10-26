@@ -32,6 +32,11 @@
             --btn-bg: #d32f2f;
             --btn-text: #ffffff;
             --warning-color: #d32f2f;
+            
+            /* Цвета для кода */
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --code-header-bg: #2d2d2d;
         }
         [data-theme="dark"] {
             --bg-color: #0a0a0a;
@@ -51,6 +56,10 @@
             --btn-bg: #00e676;
             --btn-text: #000000;
             --warning-color: #69f0ae;
+            
+            --code-bg: #0d0d0d;
+            --code-text: #a9b7c6;
+            --code-header-bg: #1a1a1a;
         }
         * { box-sizing: border-box; }
         
@@ -121,7 +130,7 @@
         .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .message.user { background-color: var(--user-msg-bg); color: var(--user-msg-text); align-self: flex-end; border-bottom-right-radius: 4px; opacity: 0.95; }
-        .message.ai { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); align-self: flex-start; border-bottom-left-radius: 4px; opacity: 0.95; }
+        .message.ai { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); align-self: flex-start; border-bottom-left-radius: 4px; opacity: 0.95; width: 100%; } /* Сделал ширину 100% для удобства кода */
         .message.loading { color: var(--text-muted); font-style: italic; align-self: flex-start; }
         
         .message.ai img { max-width: 100%; border-radius: 10px; display: block; margin-top: 10px; border: 1px solid var(--border-color); }
@@ -129,13 +138,57 @@
         .image-actions button { background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
         .image-actions button:hover { border-color: var(--accent-color); color: var(--accent-color); }
         
+        /* --- СТИЛИ ДЛЯ ВЫБОРА ФОТО --- */
         .input-area { padding: 15px; border-top: 1px solid var(--border-color); background: var(--bg-color); transition: background 0.3s; }
-        .input-wrapper { display: flex; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 25px; padding: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: border-color 0.3s, background 0.3s; }
+        .selected-images-preview { display: flex; gap: 10px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .preview-item { position: relative; flex-shrink: 0; }
+        .preview-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); }
+        .preview-item .remove-preview { position: absolute; top: -5px; right: -5px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .input-wrapper { display: flex; align-items: center; gap: 8px; background-color: var(--input-bg); border: 1px solid var(--border-color); border-radius: 25px; padding: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: border-color 0.3s, background 0.3s; }
         .input-wrapper:focus-within { border-color: var(--accent-color); }
-        input[type="text"] { flex: 1; border: none; outline: none; padding: 12px 15px; font-size: 16px; background: transparent; color: var(--text-color); }
-        button.send-btn { background-color: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 20px; width: 44px; height: 44px; cursor: pointer; font-size: 18px; transition: opacity 0.2s, background 0.3s; }
+        .attach-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-muted); padding: 0 8px; display: flex; align-items: center; }
+        .attach-btn:hover { color: var(--accent-color); }
+        input[type="text"] { flex: 1; border: none; outline: none; padding: 12px 10px; font-size: 16px; background: transparent; color: var(--text-color); }
+        button.send-btn { background-color: var(--btn-bg); color: var(--btn-text); border: none; border-radius: 20px; width: 44px; height: 44px; cursor: pointer; font-size: 18px; transition: opacity 0.2s, background 0.3s; flex-shrink: 0; }
         button.send-btn:hover { opacity: 0.9; }
         .disclaimer { font-size: 12px; color: var(--text-muted); margin-top: 10px; text-align: center; }
+
+        /* --- СТИЛИ ДЛЯ БЛОКОВ КОДА --- */
+        .code-block-wrapper {
+            background-color: var(--code-bg);
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .code-header {
+            background-color: var(--code-header-bg);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #888;
+            font-family: monospace;
+        }
+        .code-header span { text-transform: uppercase; font-weight: bold; }
+        .code-actions { display: flex; gap: 10px; }
+        .code-actions button {
+            background: none; border: none; color: #ccc; cursor: pointer; font-size: 12px;
+            display: flex; align-items: center; gap: 4px; transition: color 0.2s;
+        }
+        .code-actions button:hover { color: var(--accent-color); }
+        .code-block-wrapper pre {
+            margin: 0; padding: 12px; overflow-x: auto; color: var(--code-text);
+            font-family: monospace; font-size: 14px; line-height: 1.5;
+        }
+        /* Уведомление "Скопировано" */
+        .toast {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: #333; color: #fff; padding: 10px 20px; border-radius: 20px;
+            font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+        }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -183,12 +236,19 @@
     </div>
 
     <div class="input-area">
+        <div class="selected-images-preview" id="preview-container"></div>
+        
         <div class="input-wrapper">
+            <input type="file" id="image-input" accept="image/*" multiple style="display: none;" onchange="handleImageSelect(event)">
+            <button class="attach-btn" onclick="document.getElementById('image-input').click()">📎</button>
+            
             <input type="text" id="message-input" placeholder="Напишите сообщение..." onkeypress="handleKeyPress(event)">
             <button class="send-btn" onclick="sendMessage()">➤</button>
         </div>
         <div class="disclaimer">Houndler может допускать ошибки.</div>
     </div>
+
+    <div class="toast" id="toast">Скопировано!</div>
 
     <script>
         const WORKER_URL = "https://houndlerii.huyguybbb.workers.dev/";
@@ -196,6 +256,11 @@
         const welcomeScreen = document.getElementById('welcome-screen');
         const messageInput = document.getElementById('message-input');
         const historyList = document.getElementById('chat-history-list');
+        const imageInput = document.getElementById('image-input');
+        const previewContainer = document.getElementById('preview-container');
+        const toast = document.getElementById('toast');
+
+        let selectedImages = [];
 
         const savedTheme = localStorage.getItem('my_ai_theme');
         if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); }
@@ -252,6 +317,8 @@
             chatContainer.innerHTML = '';
             chatContainer.appendChild(welcomeScreen);
             welcomeScreen.style.display = 'block';
+            selectedImages = [];
+            renderPreview();
             toggleSidebar();
         }
 
@@ -259,12 +326,14 @@
             currentChatId = id;
             const chat = allChats.find(c => c.id === id);
             chatContainer.innerHTML = '';
+            selectedImages = [];
+            renderPreview();
             if (!chat || chat.messages.length === 0) {
                 chatContainer.appendChild(welcomeScreen);
                 welcomeScreen.style.display = 'block';
             } else {
                 welcomeScreen.style.display = 'none';
-                chat.messages.forEach(msg => { renderMessageBubble(msg.text, msg.sender, msg.image); });
+                chat.messages.forEach(msg => { renderMessageBubble(msg.text, msg.sender, msg.image, msg.images); });
             }
             renderHistory();
             scrollToBottom();
@@ -294,7 +363,7 @@
                 const base64Image = e.target.result;
                 applyBackground(base64Image);
                 try { localStorage.setItem('my_ai_bg', base64Image); } 
-                catch (error) { alert("Ошибка: Картинка слишком большая для сохранения. Выберите файл поменьше."); }
+                catch (error) { alert("Ошибка: Картинка слишком большая. Выберите файл поменьше."); }
             };
             reader.readAsDataURL(file);
         }
@@ -307,40 +376,85 @@
 
         function useSuggestion(text) { messageInput.value = text; sendMessage(); }
 
+        function handleImageSelect(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImages.push(e.target.result);
+                    renderPreview();
+                };
+                reader.readAsDataURL(file);
+            }
+            imageInput.value = '';
+        }
+
+        function renderPreview() {
+            previewContainer.innerHTML = '';
+            selectedImages.forEach((imgData, index) => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                const img = document.createElement('img');
+                img.src = imgData;
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-preview';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => {
+                    selectedImages.splice(index, 1);
+                    renderPreview();
+                };
+                div.appendChild(img);
+                div.appendChild(removeBtn);
+                previewContainer.appendChild(div);
+            });
+        }
+
         async function sendMessage() {
             const text = messageInput.value.trim();
-            if (!text) return;
+            if (!text && selectedImages.length === 0) return;
+            
             if (!currentChatId) { startNewChat(); }
             const chat = allChats.find(c => c.id === currentChatId);
-            if (chat.messages.length === 0) { chat.title = text.substring(0, 20) + (text.length > 20 ? '...' : ''); }
             
-            // Добавляем сообщение пользователя в историю
-            chat.messages.push({ sender: 'user', text: text });
+            if (chat.messages.length === 0) {
+                chat.title = text ? (text.substring(0, 20) + (text.length > 20 ? '...' : '')) : "Фото";
+            }
+            
+            const userMessage = { 
+                sender: 'user', 
+                text: text || "Фото", 
+                images: selectedImages.length > 0 ? [...selectedImages] : null 
+            };
+            chat.messages.push(userMessage);
             saveChats();
             
             if (welcomeScreen.parentNode) welcomeScreen.style.display = 'none';
-            renderMessageBubble(text, 'user');
+            renderMessageBubble(userMessage.text, 'user', null, userMessage.images);
+            
             messageInput.value = '';
+            selectedImages = [];
+            renderPreview();
+            
             const loadingId = addLoading();
 
             try {
-                const isImageRequest = /нарисуй|сген|созд|картин|фото|изображ|арт|picture|draw/i.test(text.toLowerCase());
+                const isImageRequest = text ? /нарисуй|сген|созд|картин|фото|изображ|арт|picture|draw/i.test(text.toLowerCase()) : false;
                 
-                // --- ЛОГИКА ПАМЯТИ (ВСЯ ИСТОРИЯ С ЗАЩИТОЙ) ---
                 let historyToSend = [];
                 let currentLength = 0;
-                // Идем с конца (самые свежие сообщения)
                 for (let i = chat.messages.length - 1; i >= 0; i--) {
                     const msg = chat.messages[i];
-                    if (msg.image) continue; // Пропускаем картинки (ИИ не читает base64)
+                    if (msg.image) continue;
                     
                     const msgLength = msg.text.length;
-                    // Ограничение в 6000 символов, чтобы ИИ не упал от переполнения
                     if (currentLength + msgLength > 6000) break;
                     
                     historyToSend.unshift({
                         role: msg.sender === 'user' ? 'user' : 'assistant',
-                        content: msg.text
+                        content: msg.text,
+                        images: msg.images
                     });
                     currentLength += msgLength;
                 }
@@ -348,7 +462,8 @@
                 const payload = { 
                     message: text, 
                     type: isImageRequest ? "image" : "text",
-                    history: historyToSend // <--- Отправляем память!
+                    history: historyToSend,
+                    currentImages: userMessage.images
                 };
 
                 const response = await fetch(WORKER_URL, {
@@ -379,10 +494,27 @@
             }
         }
 
-        function renderMessageBubble(text, sender, imageUrl = null) {
+        // --- ПАРСЕР MARKDOWN ДЛЯ БЛОКОВ КОДА ---
+        function renderMessageBubble(text, sender, imageUrl = null, imageArray = null) {
             const div = document.createElement('div');
             div.classList.add('message', sender);
-            if (imageUrl) {
+            
+            if (imageArray && imageArray.length > 0) {
+                imageArray.forEach(imgData => {
+                    const img = document.createElement('img');
+                    img.src = imgData;
+                    img.style.maxWidth = '100%';
+                    img.style.borderRadius = '8px';
+                    img.style.marginTop = '5px';
+                    div.appendChild(img);
+                });
+                if (text && text !== "Фото") {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    p.style.margin = '10px 0 0 0';
+                    div.appendChild(p);
+                }
+            } else if (imageUrl) {
                 const img = document.createElement('img');
                 img.src = imageUrl;
                 div.appendChild(img);
@@ -413,10 +545,83 @@
                     div.appendChild(p);
                 }
             } else {
-                div.textContent = text;
+                // --- МАГИЯ: Ищем блоки кода ``` ... ``` ---
+                const parts = text.split(/(```[\s\S]*?```)/g);
+                parts.forEach(part => {
+                    if (part.startsWith('```') && part.endsWith('```')) {
+                        // Это блок кода
+                        const codeContent = part.slice(3, -3).trim();
+                        const firstLineEnd = codeContent.indexOf('\n');
+                        let language = 'code';
+                        let codeText = codeContent;
+                        
+                        // Пытаемся вытащить язык (например, ```javascript)
+                        if (firstLineEnd !== -1) {
+                            const firstLine = codeContent.substring(0, firstLineEnd).trim();
+                            if (firstLine && !firstLine.includes(' ')) {
+                                language = firstLine;
+                                codeText = codeContent.substring(firstLineEnd).trim();
+                            }
+                        }
+
+                        // Создаем красивый блок
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'code-block-wrapper';
+                        
+                        const header = document.createElement('div');
+                        header.className = 'code-header';
+                        header.innerHTML = `<span>${language}</span>`;
+                        
+                        const actions = document.createElement('div');
+                        actions.className = 'code-actions';
+                        
+                        const copyBtn = document.createElement('button');
+                        copyBtn.innerHTML = '📋 Копировать';
+                        copyBtn.onclick = () => {
+                            navigator.clipboard.writeText(codeText).then(() => {
+                                showToast();
+                            });
+                        };
+
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.innerHTML = '⬇️ Скачать';
+                        downloadBtn.onclick = () => {
+                            const blob = new Blob([codeText], { type: 'text/plain' });
+                            const a = document.createElement('a');
+                            a.href = URL.createObjectURL(blob);
+                            a.download = `code.${language === 'code' ? 'txt' : language}`;
+                            a.click();
+                        };
+
+                        actions.appendChild(copyBtn);
+                        actions.appendChild(downloadBtn);
+                        header.appendChild(actions);
+                        
+                        const pre = document.createElement('pre');
+                        const code = document.createElement('code');
+                        code.textContent = codeText;
+                        pre.appendChild(code);
+                        
+                        wrapper.appendChild(header);
+                        wrapper.appendChild(pre);
+                        div.appendChild(wrapper);
+                    } else {
+                        // Обычный текст
+                        if (part.trim()) {
+                            const p = document.createElement('span');
+                            p.textContent = part;
+                            div.appendChild(p);
+                        }
+                    }
+                });
             }
             chatContainer.appendChild(div);
             scrollToBottom();
+        }
+
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
         }
 
         function addLoading() {
