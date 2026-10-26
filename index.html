@@ -130,32 +130,11 @@
         .theme-toggle-btn:hover, .bg-upload-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
         /* --- СТИЛИ ДЛЯ РЕЖИМОВ --- */
-        .mode-selector {
-            display: flex; flex-direction: column; gap: 5px; margin-top: 10px;
-        }
-        .mode-option {
-            padding: 10px; border: 1px solid var(--mode-border); border-radius: 8px;
-            cursor: pointer; text-align: center; font-size: 14px;
-            background-color: var(--mode-bg); color: var(--text-color);
-            transition: all 0.2s;
-        }
-        .mode-option.active {
-            background-color: var(--mode-active-bg);
-            color: var(--mode-active-text);
-            border-color: var(--mode-active-bg);
-            font-weight: bold;
-        }
-        /* Стиль для заблокированных кнопок */
-        .mode-option.disabled {
-            background-color: var(--mode-disabled-bg) !important;
-            color: var(--mode-disabled-text) !important;
-            border-color: var(--mode-border) !important;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .mode-info {
-            font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: center; display: none;
-        }
+        .mode-selector { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+        .mode-option { padding: 10px; border: 1px solid var(--mode-border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 14px; background-color: var(--mode-bg); color: var(--text-color); transition: all 0.2s; }
+        .mode-option.active { background-color: var(--mode-active-bg); color: var(--mode-active-text); border-color: var(--mode-active-bg); font-weight: bold; }
+        .mode-option.disabled { background-color: var(--mode-disabled-bg) !important; color: var(--mode-disabled-text) !important; border-color: var(--mode-border) !important; cursor: not-allowed; opacity: 0.6; }
+        .mode-info { font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: center; display: none; }
 
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; position: relative; }
         .center-text { text-align: center; margin-top: 10vh; }
@@ -289,15 +268,12 @@
 
         // --- ЛОГИКА РЕЖИМОВ ---
         let currentMode = localStorage.getItem('my_ai_mode') || 'standard';
-        let modeIsLocked = false; // Флаг блокировки
+        let modeIsLocked = false;
 
         function setMode(mode) {
-            if (modeIsLocked) return; // Если заблокировано, ничего не делаем
-            
+            if (modeIsLocked) return; 
             currentMode = mode;
             localStorage.setItem('my_ai_mode', mode);
-            
-            // Обновляем визуальное выделение
             document.querySelectorAll('.mode-option').forEach(el => {
                 el.classList.remove('active');
                 el.classList.remove('disabled');
@@ -308,25 +284,24 @@
         function lockModes(activeMode) {
             modeIsLocked = true;
             modeLockInfo.style.display = 'block';
-            
             document.querySelectorAll('.mode-option').forEach(el => {
                 el.classList.remove('active');
                 el.classList.add('disabled');
             });
-            // Подсвечиваем тот, который был выбран при создании чата
             document.getElementById(`mode-${activeMode}`).classList.add('active');
         }
 
         function unlockModes() {
             modeIsLocked = false;
             modeLockInfo.style.display = 'none';
-            
             document.querySelectorAll('.mode-option').forEach(el => {
                 el.classList.remove('disabled');
             });
-            setMode(currentMode); // Возвращаем текущий глобальный режим
+            setMode(currentMode);
         }
-        // -----------------------
+
+        // Инициализация при загрузке
+        if (!modeIsLocked) setMode(currentMode);
 
         const savedTheme = localStorage.getItem('my_ai_theme');
         if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); }
@@ -386,7 +361,7 @@
             welcomeScreen.style.display = 'block';
             selectedImages = [];
             renderPreview();
-            unlockModes(); // Разблокируем режимы для нового чата
+            unlockModes();
             toggleSidebar();
         }
 
@@ -404,7 +379,6 @@
             } else {
                 welcomeScreen.style.display = 'none';
                 chat.messages.forEach(msg => { renderMessageBubble(msg.text, msg.sender, msg.image, msg.images); });
-                // Блокируем режимы на основе сохраненного режима чата
                 lockModes(chat.mode || 'standard');
             }
             renderHistory();
@@ -490,11 +464,10 @@
             if (!currentChatId) { startNewChat(); }
             const chat = allChats.find(c => c.id === currentChatId);
             
-            // Если это первое сообщение - фиксируем режим и блокируем кнопки
             if (chat.messages.length === 0) {
                 chat.title = text ? (text.substring(0, 20) + (text.length > 20 ? '...' : '')) : "Фото";
-                chat.mode = currentMode; // Сохраняем режим в чат
-                lockModes(currentMode); // Блокируем смену режима
+                chat.mode = currentMode; 
+                lockModes(currentMode); 
             }
             
             const userMessage = { 
@@ -618,3 +591,106 @@
                         else { alert('Ваш браузер не поддерживает функцию "Поделиться".'); }
                     } catch (e) { console.log(e); }
                 };
+                actions.appendChild(downloadBtn);
+                actions.appendChild(shareBtn);
+                div.appendChild(actions);
+                if (text && text !== "Сгенерированное изображение") {
+                    const p = document.createElement('p');
+                    p.textContent = text;
+                    p.style.margin = '10px 0 0 0';
+                    p.style.fontSize = '12px';
+                    p.style.color = 'var(--text-muted)';
+                    div.appendChild(p);
+                }
+            } else {
+                const parts = text.split(/(```[\s\S]*?```)/g);
+                parts.forEach(part => {
+                    if (part.startsWith('```') && part.endsWith('```')) {
+                        const codeContent = part.slice(3, -3).trim();
+                        const firstLineEnd = codeContent.indexOf('\n');
+                        let language = 'code';
+                        let codeText = codeContent;
+                        
+                        if (firstLineEnd !== -1) {
+                            const firstLine = codeContent.substring(0, firstLineEnd).trim();
+                            if (firstLine && !firstLine.includes(' ')) {
+                                language = firstLine;
+                                codeText = codeContent.substring(firstLineEnd).trim();
+                            }
+                        }
+
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'code-block-wrapper';
+                        const header = document.createElement('div');
+                        header.className = 'code-header';
+                        header.innerHTML = `<span>${language}</span>`;
+                        const actions = document.createElement('div');
+                        actions.className = 'code-actions';
+                        
+                        const copyBtn = document.createElement('button');
+                        copyBtn.innerHTML = '📋 Копировать';
+                        copyBtn.onclick = () => {
+                            navigator.clipboard.writeText(codeText).then(() => { showToast(); });
+                        };
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.innerHTML = '⬇️ Скачать';
+                        downloadBtn.onclick = () => {
+                            const blob = new Blob([codeText], { type: 'text/plain' });
+                            const a = document.createElement('a');
+                            a.href = URL.createObjectURL(blob);
+                            a.download = `code.${language === 'code' ? 'txt' : language}`;
+                            a.click();
+                        };
+                        actions.appendChild(copyBtn);
+                        actions.appendChild(downloadBtn);
+                        header.appendChild(actions);
+                        
+                        const pre = document.createElement('pre');
+                        const code = document.createElement('code');
+                        code.textContent = codeText;
+                        pre.appendChild(code);
+                        wrapper.appendChild(header);
+                        wrapper.appendChild(pre);
+                        div.appendChild(wrapper);
+                    } else {
+                        if (part.trim()) {
+                            const p = document.createElement('span');
+                            p.textContent = part;
+                            div.appendChild(p);
+                        }
+                    }
+                });
+            }
+            chatContainer.appendChild(div);
+            scrollToBottom();
+        }
+
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2000);
+        }
+
+        function addLoading() {
+            const id = 'loading-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.classList.add('message', 'loading');
+            div.textContent = "Houndler думает...";
+            chatContainer.appendChild(div);
+            scrollToBottom();
+            return id;
+        }
+        function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
+        function scrollToBottom() { chatContainer.scrollTop = chatContainer.scrollHeight; }
+
+        renderHistory();
+        if (allChats.length > 0) { loadChat(allChats[0].id); } else { startNewChat(); }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(e => console.log(e));
+            });
+        }
+    </script>
+</body>
+</html>
