@@ -219,23 +219,9 @@
         <div class="user-icon"></div>
     </header>
 
+    <!-- Основной контейнер чата -->
     <div class="chat-container" id="chat-container">
-        <div class="center-text" id="welcome-screen">
-            <h1>Чем Houndler может помочь?</h1>
-            <p>Задай любой вопрос или попроси нарисовать картинку.</p>
-            
-            <div class="suggestions-container">
-                <div class="suggestion-bubble" onclick="useSuggestion('Что приготовить на ужин?')">Что приготовить?</div>
-                <div class="suggestion-bubble" onclick="useSuggestion('Чем заняться в выходные?')">Чем заняться?</div>
-            </div>
-            
-            <div style="text-align: center;">
-                <div class="warning-text">
-                    <span>⚠️</span>
-                    <span>Не советуем обновлять сайт или закрывать вкладку, иначе ваши чаты удалятся.</span>
-                </div>
-            </div>
-        </div>
+        <!-- Приветствие будет создано скриптом -->
     </div>
 
     <div class="input-area">
@@ -256,7 +242,6 @@
     <script>
         const WORKER_URL = "https://houndlerii.huyguybbb.workers.dev/";
         const chatContainer = document.getElementById('chat-container');
-        const welcomeScreen = document.getElementById('welcome-screen');
         const messageInput = document.getElementById('message-input');
         const historyList = document.getElementById('chat-history-list');
         const imageInput = document.getElementById('image-input');
@@ -300,7 +285,6 @@
             setMode(currentMode);
         }
 
-        // Инициализация при загрузке
         if (!modeIsLocked) setMode(currentMode);
 
         const savedTheme = localStorage.getItem('my_ai_theme');
@@ -311,6 +295,30 @@
 
         let allChats = JSON.parse(localStorage.getItem('my_ai_chats')) || [];
         let currentChatId = null;
+
+        // --- ФУНКЦИЯ СОЗДАНИЯ ПРИВЕТСТВИЯ ---
+        function createWelcomeScreen() {
+            const welcomeDiv = document.createElement('div');
+            welcomeDiv.className = 'center-text';
+            welcomeDiv.id = 'welcome-screen';
+            welcomeDiv.innerHTML = `
+                <h1>Чем Houndler может помочь?</h1>
+                <p>Задай любой вопрос или попроси нарисовать картинку.</p>
+                
+                <div class="suggestions-container">
+                    <div class="suggestion-bubble" onclick="useSuggestion('Что приготовить на ужин?')">Что приготовить?</div>
+                    <div class="suggestion-bubble" onclick="useSuggestion('Чем заняться в выходные?')">Чем заняться?</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div class="warning-text">
+                        <span>⚠️</span>
+                        <span>Не советуем обновлять сайт или закрывать вкладку, иначе ваши чаты удалятся.</span>
+                    </div>
+                </div>
+            `;
+            return welcomeDiv;
+        }
 
         function saveChats() { localStorage.setItem('my_ai_chats', JSON.stringify(allChats)); renderHistory(); }
         
@@ -339,8 +347,7 @@
                 if (currentChatId === id) {
                     currentChatId = null;
                     chatContainer.innerHTML = '';
-                    chatContainer.appendChild(welcomeScreen);
-                    welcomeScreen.style.display = 'block';
+                    chatContainer.appendChild(createWelcomeScreen()); // Возвращаем приветствие
                     unlockModes();
                 }
                 saveChats();
@@ -356,9 +363,10 @@
             allChats.unshift(newChat);
             currentChatId = newChat.id;
             saveChats();
-            chatContainer.innerHTML = '';
-            chatContainer.appendChild(welcomeScreen);
-            welcomeScreen.style.display = 'block';
+            
+            chatContainer.innerHTML = ''; // Очищаем всё
+            chatContainer.appendChild(createWelcomeScreen()); // Добавляем приветствие
+            
             selectedImages = [];
             renderPreview();
             unlockModes();
@@ -368,16 +376,15 @@
         function loadChat(id) {
             currentChatId = id;
             const chat = allChats.find(c => c.id === id);
-            chatContainer.innerHTML = '';
+            chatContainer.innerHTML = ''; // Очищаем всё
             selectedImages = [];
             renderPreview();
             
             if (!chat || chat.messages.length === 0) {
-                chatContainer.appendChild(welcomeScreen);
-                welcomeScreen.style.display = 'block';
+                chatContainer.appendChild(createWelcomeScreen()); // Если пусто — показываем приветствие
                 unlockModes();
             } else {
-                welcomeScreen.style.display = 'none';
+                // Если есть история — приветствие НЕ добавляем
                 chat.messages.forEach(msg => { renderMessageBubble(msg.text, msg.sender, msg.image, msg.images); });
                 lockModes(chat.mode || 'standard');
             }
@@ -468,6 +475,10 @@
                 chat.title = text ? (text.substring(0, 20) + (text.length > 20 ? '...' : '')) : "Фото";
                 chat.mode = currentMode; 
                 lockModes(currentMode); 
+                
+                // УДАЛЯЕМ ПРИВЕТСТВИЕ (чтобы оно не висело над первым сообщением)
+                const welcome = document.getElementById('welcome-screen');
+                if (welcome) welcome.remove();
             }
             
             const userMessage = { 
@@ -478,7 +489,6 @@
             chat.messages.push(userMessage);
             saveChats();
             
-            if (welcomeScreen.parentNode) welcomeScreen.style.display = 'none';
             renderMessageBubble(userMessage.text, 'user', null, userMessage.images);
             
             messageInput.value = '';
@@ -552,7 +562,6 @@
             }
         }
 
-        // --- ПАРСЕР MARKDOWN ДЛЯ БЛОКОВ КОДА ---
         function renderMessageBubble(text, sender, imageUrl = null, imageArray = null) {
             const div = document.createElement('div');
             div.classList.add('message', sender);
