@@ -33,10 +33,14 @@
             --btn-text: #ffffff;
             --warning-color: #d32f2f;
             
-            /* Цвета для кода */
             --code-bg: #1e1e1e;
             --code-text: #d4d4d4;
             --code-header-bg: #2d2d2d;
+            
+            --mode-bg: #fff;
+            --mode-border: #ddd;
+            --mode-active-bg: #d32f2f;
+            --mode-active-text: #fff;
         }
         [data-theme="dark"] {
             --bg-color: #0a0a0a;
@@ -60,6 +64,11 @@
             --code-bg: #0d0d0d;
             --code-text: #a9b7c6;
             --code-header-bg: #1a1a1a;
+            
+            --mode-bg: #121212;
+            --mode-border: #1e3b2e;
+            --mode-active-bg: #00e676;
+            --mode-active-text: #000;
         }
         * { box-sizing: border-box; }
         
@@ -115,7 +124,24 @@
         .settings-btn { margin-top: auto; padding: 15px; background: var(--ai-msg-bg); border-radius: 10px; text-align: left; margin-bottom: 10px; }
         .theme-toggle-btn, .bg-upload-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; transition: all 0.3s; margin-top: 10px; text-align: center; display: block; }
         .theme-toggle-btn:hover, .bg-upload-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
-        
+
+        /* --- СТИЛИ ДЛЯ РЕЖИМОВ --- */
+        .mode-selector {
+            display: flex; flex-direction: column; gap: 5px; margin-top: 10px;
+        }
+        .mode-option {
+            padding: 10px; border: 1px solid var(--mode-border); border-radius: 8px;
+            cursor: pointer; text-align: center; font-size: 14px;
+            background-color: var(--mode-bg); color: var(--text-color);
+            transition: all 0.2s;
+        }
+        .mode-option.active {
+            background-color: var(--mode-active-bg);
+            color: var(--mode-active-text);
+            border-color: var(--mode-active-bg);
+            font-weight: bold;
+        }
+
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; position: relative; }
         .center-text { text-align: center; margin-top: 10vh; }
         .center-text h1 { font-size: 28px; margin-bottom: 10px; color: var(--text-color); }
@@ -181,6 +207,14 @@
             <input type="file" id="bg-upload" accept="image/*" style="display: none;" onchange="handleBgUpload(event)">
             <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">🖼️ Добавить свои обои</button>
             <button class="bg-upload-btn" onclick="resetBg()" style="font-size: 12px; padding: 5px; opacity: 0.7;">Сбросить обои</button>
+
+            <!-- БЛОК РЕЖИМОВ -->
+            <h3 style="margin-top: 20px; margin-bottom: 5px; font-size: 12px;">Режимы</h3>
+            <div class="mode-selector">
+                <div class="mode-option active" id="mode-standard" onclick="setMode('standard')">📝 Стандарт</div>
+                <div class="mode-option" id="mode-generator" onclick="setMode('generator')">🎨 Генератор</div>
+                <div class="mode-option" id="mode-5050" onclick="setMode('5050')">⚖️ 50/50</div>
+            </div>
         </div>
     </div>
 
@@ -235,6 +269,22 @@
         const toast = document.getElementById('toast');
 
         let selectedImages = [];
+
+        // --- ЛОГИКА РЕЖИМОВ ---
+        let currentMode = localStorage.getItem('my_ai_mode') || 'standard';
+
+        function setMode(mode) {
+            currentMode = mode;
+            localStorage.setItem('my_ai_mode', mode);
+            
+            // Обновляем визуальное выделение
+            document.querySelectorAll('.mode-option').forEach(el => el.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
+        }
+
+        // Инициализация режима при загрузке
+        setMode(currentMode);
+        // -----------------------
 
         const savedTheme = localStorage.getItem('my_ai_theme');
         if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); }
@@ -414,10 +464,23 @@
             const loadingId = addLoading();
 
             try {
-                // --- ИСПРАВЛЕНИЕ ЗДЕСЬ: Если есть фото, мы НЕ генерируем новую картинку ---
+                // --- ЛОГИКА РЕЖИМОВ ---
                 const hasImages = userMessage.images && userMessage.images.length > 0;
-                const isImageRequest = !hasImages && text ? /нарисуй|сген|созд|картин|фото|изображ|арт|picture|draw/i.test(text.toLowerCase()) : false;
                 
+                // По умолчанию - текст
+                let requestType = "text"; 
+                
+                if (hasImages) {
+                    requestType = "vision"; // Анализ фото (всегда работает, если есть фото)
+                } else if (currentMode === 'generator') {
+                    requestType = "image"; // В режиме генератора любая смс - это запрос на картинку
+                } else if (currentMode === '5050') {
+                    // В режиме 50/50 нужно явно попросить
+                    const isExplicitImage = /сген|нарисуй|картин|фото|изображ|арт|picture|draw/i.test(text.toLowerCase());
+                    if (isExplicitImage) requestType = "image";
+                } 
+                // Если режим standard, requestType остается "text", и ИИ не будет рисовать
+
                 let historyToSend = [];
                 let currentLength = 0;
                 for (let i = chat.messages.length - 1; i >= 0; i--) {
@@ -437,7 +500,7 @@
 
                 const payload = { 
                     message: text, 
-                    type: isImageRequest ? "image" : "text",
+                    type: requestType, // Отправляем тип запроса
                     history: historyToSend,
                     currentImages: userMessage.images
                 };
