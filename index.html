@@ -86,30 +86,15 @@
             overscroll-behavior: none;
         }
         
-        .chat-container.has-bg {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        .chat-container.has-bg::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 0;
-            pointer-events: none;
-        }
-        .chat-container.has-bg .message, 
-        .chat-container.has-bg .center-text {
-            position: relative;
-            z-index: 1;
-        }
+        .chat-container.has-bg { background-size: cover; background-position: center; background-repeat: no-repeat; }
+        .chat-container.has-bg::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 0; pointer-events: none; }
+        .chat-container.has-bg .message, .chat-container.has-bg .center-text { position: relative; z-index: 1; }
 
         header { background-color: var(--header-bg); padding: 15px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; transition: background 0.3s, border-color 0.3s; }
         .menu-btn { cursor: pointer; font-size: 24px; user-select: none; color: var(--text-color); }
         .user-icon { width: 30px; height: 30px; background-color: var(--accent-color); border-radius: 50%; transition: background 0.3s; }
         
-        .sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background-color: var(--header-bg); z-index: 20; transition: left 0.3s ease, background 0.3s; padding: 20px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background-color: var(--header-bg); z-index: 20; transition: left 0.3s ease, background 0.3s; padding: 20px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; overflow-y: auto; }
         .sidebar.open { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 15; display: none; }
         .sidebar-overlay.open { display: block; }
@@ -129,12 +114,29 @@
         .theme-toggle-btn, .bg-upload-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; transition: all 0.3s; margin-top: 10px; text-align: center; display: block; }
         .theme-toggle-btn:hover, .bg-upload-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
+        /* --- СТИЛИ ДЛЯ РЕЖИМОВ --- */
         .mode-selector { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
         .mode-option { padding: 10px; border: 1px solid var(--mode-border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 14px; background-color: var(--mode-bg); color: var(--text-color); transition: all 0.2s; }
         .mode-option.active { background-color: var(--mode-active-bg); color: var(--mode-active-text); border-color: var(--mode-active-bg); font-weight: bold; }
         .mode-option.disabled { background-color: var(--mode-disabled-bg) !important; color: var(--mode-disabled-text) !important; border-color: var(--mode-border) !important; cursor: not-allowed; opacity: 0.6; }
         .mode-info { font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: center; display: none; }
 
+        /* --- СТИЛИ ДЛЯ ШРИФТОВ --- */
+        .font-selector { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .font-option { flex: 1; min-width: 45%; padding: 8px; border: 1px solid var(--mode-border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 13px; background-color: var(--mode-bg); color: var(--text-color); transition: all 0.2s; }
+        .font-option.active { background-color: var(--mode-active-bg); color: var(--mode-active-text); border-color: var(--mode-active-bg); font-weight: bold; }
+        .font-option.font-cursive { font-family: cursive; }
+        .font-option.font-mono { font-family: monospace; }
+        .font-option.font-bold { font-weight: 900; }
+        
+        .effect-btn { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--mode-bg); color: var(--text-color); cursor: pointer; margin-top: 10px; text-align: center; }
+        .effect-btn.active { border-color: var(--accent-color); color: var(--accent-color); }
+
+        .color-picker-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .color-picker-container label { font-size: 13px; }
+        input[type="color"] { border: none; width: 40px; height: 30px; cursor: pointer; background: none; }
+
+        /* --- ОСНОВНОЙ ЧАТ --- */
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; position: relative; }
         .center-text { text-align: center; margin-top: 10vh; }
         .center-text h1 { font-size: 28px; margin-bottom: 10px; color: var(--text-color); }
@@ -146,6 +148,7 @@
         
         .warning-text { margin-top: 25px; font-size: 13px; color: var(--warning-color); background-color: rgba(128, 128, 128, 0.1); padding: 10px 15px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; text-align: left; max-width: 350px; line-height: 1.4; }
         
+        /* ДИНАМИЧЕСКИЕ СТИЛИ ДЛЯ СООБЩЕНИЙ */
         .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .message.user { background-color: var(--user-msg-bg); color: var(--user-msg-text); align-self: flex-end; border-bottom-right-radius: 4px; opacity: 0.95; }
@@ -171,6 +174,7 @@
         button.send-btn:hover { opacity: 0.9; }
         .disclaimer { font-size: 12px; color: var(--text-muted); margin-top: 10px; text-align: center; }
 
+        /* --- СТИЛИ ДЛЯ БЛОКОВ КОДА --- */
         .code-block-wrapper { background-color: var(--code-bg); border-radius: 8px; margin: 10px 0; overflow: hidden; border: 1px solid var(--border-color); }
         .code-header { background-color: var(--code-header-bg); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #888; font-family: monospace; }
         .code-header span { text-transform: uppercase; font-weight: bold; }
@@ -199,6 +203,7 @@
             <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">🖼️ Добавить свои обои</button>
             <button class="bg-upload-btn" onclick="resetBg()" style="font-size: 12px; padding: 5px; opacity: 0.7;">Сбросить обои</button>
 
+            <!-- РЕЖИМЫ -->
             <h3 style="margin-top: 20px; margin-bottom: 5px; font-size: 12px;">Режимы</h3>
             <div class="mode-selector" id="mode-selector">
                 <div class="mode-option" id="mode-standard" onclick="setMode('standard')">📝 Стандарт</div>
@@ -206,6 +211,23 @@
                 <div class="mode-option" id="mode-5050" onclick="setMode('5050')">⚖️ 50/50</div>
             </div>
             <div class="mode-info" id="mode-lock-info">Режим заблокирован для этого чата</div>
+
+            <!-- СТИЛЬ ТЕКСТА -->
+            <h3 style="margin-top: 20px; margin-bottom: 5px; font-size: 12px;">Стиль текста</h3>
+            <div class="font-selector">
+                <div class="font-option active" id="font-default" onclick="setFont('default')">Обычный</div>
+                <div class="font-option font-cursive" id="font-cursive" onclick="setFont('cursive')">Волнистый</div>
+                <div class="font-option font-mono" id="font-mono" onclick="setFont('mono')">Печатный</div>
+                <div class="font-option font-bold" id="font-bold" onclick="setFont('bold')">Жирный</div>
+            </div>
+
+            <button class="effect-btn" id="effect-glow" onclick="toggleEffect('glow')">✨ Включить свечение</button>
+            <button class="effect-btn" id="effect-outline" onclick="toggleEffect('outline')">🖍 Включить обводку</button>
+
+            <div class="color-picker-container">
+                <label>Цвет текста:</label>
+                <input type="color" id="text-color-picker" value="#d32f2f" onchange="setTextColor(this.value)">
+            </div>
         </div>
     </div>
 
@@ -215,7 +237,6 @@
         <div class="user-icon"></div>
     </header>
 
-    <!-- Основной контейнер чата, приветствие добавляется скриптом -->
     <div class="chat-container" id="chat-container"></div>
 
     <div class="input-area">
@@ -253,34 +274,88 @@
             if (modeIsLocked) return; 
             currentMode = mode;
             localStorage.setItem('my_ai_mode', mode);
-            document.querySelectorAll('.mode-option').forEach(el => {
-                el.classList.remove('active');
-                el.classList.remove('disabled');
-            });
+            document.querySelectorAll('.mode-option').forEach(el => { el.classList.remove('active'); el.classList.remove('disabled'); });
             document.getElementById(`mode-${mode}`).classList.add('active');
         }
 
         function lockModes(activeMode) {
             modeIsLocked = true;
             modeLockInfo.style.display = 'block';
-            document.querySelectorAll('.mode-option').forEach(el => {
-                el.classList.remove('active');
-                el.classList.add('disabled');
-            });
+            document.querySelectorAll('.mode-option').forEach(el => { el.classList.remove('active'); el.classList.add('disabled'); });
             document.getElementById(`mode-${activeMode}`).classList.add('active');
         }
 
         function unlockModes() {
             modeIsLocked = false;
             modeLockInfo.style.display = 'none';
-            document.querySelectorAll('.mode-option').forEach(el => {
-                el.classList.remove('disabled');
-            });
+            document.querySelectorAll('.mode-option').forEach(el => { el.classList.remove('disabled'); });
             setMode(currentMode);
         }
 
-        if (!modeIsLocked) setMode(currentMode);
+        // --- ЛОГИКА СТИЛЕЙ ТЕКСТА ---
+        let currentFont = 'default';
+        let isGlowActive = false;
+        let isOutlineActive = false;
+        let textColor = '#d32f2f';
 
+        function setFont(font) {
+            currentFont = font;
+            document.querySelectorAll('.font-option').forEach(el => el.classList.remove('active'));
+            document.getElementById(`font-${font}`).classList.add('active');
+            updateTextStyles();
+        }
+
+        function toggleEffect(effect) {
+            if (effect === 'glow') {
+                isGlowActive = !isGlowActive;
+                document.getElementById('effect-glow').classList.toggle('active', isGlowActive);
+            } else if (effect === 'outline') {
+                isOutlineActive = !isOutlineActive;
+                document.getElementById('effect-outline').classList.toggle('active', isOutlineActive);
+            }
+            updateTextStyles();
+        }
+
+        function setTextColor(color) {
+            textColor = color;
+            updateTextStyles();
+        }
+
+        function updateTextStyles() {
+            const root = document.documentElement;
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            
+            // Проверка на "антоним" (если цвет сливается с фоном, меняем его)
+            let finalColor = textColor;
+            if (isDark && (textColor === '#111111' || textColor === '#000000')) {
+                finalColor = '#ffffff'; // Если тема тёмная, а цвет чёрный — делаем белым
+            } else if (!isDark && (textColor === '#ffffff' || textColor === '#e0f2e9')) {
+                finalColor = '#111111'; // Если тема светлая, а цвет белый — делаем чёрным
+            }
+
+            // Устанавливаем цвет через CSS-переменную
+            root.style.setProperty('--user-text-color', finalColor);
+            
+            // Применяем стили ко всем сообщениям
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.style.color = finalColor;
+                // Шрифт
+                if (currentFont === 'cursive') msg.style.fontFamily = 'cursive';
+                else if (currentFont === 'mono') msg.style.fontFamily = 'monospace';
+                else if (currentFont === 'bold') { msg.style.fontFamily = 'inherit'; msg.style.fontWeight = '900'; }
+                else { msg.style.fontFamily = 'inherit'; msg.style.fontWeight = 'normal'; }
+
+                // Эффекты
+                if (isGlowActive) msg.style.textShadow = `0 0 5px ${finalColor}, 0 0 10px ${finalColor}`;
+                else if (isOutlineActive) msg.style.textShadow = `1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000`;
+                else msg.style.textShadow = 'none';
+            });
+        }
+
+        // Инициализация стилей
+        setFont('default');
+
+        // --- ОСТАЛЬНАЯ ЛОГИКА ---
         const savedTheme = localStorage.getItem('my_ai_theme');
         if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); }
 
@@ -290,7 +365,6 @@
         let allChats = JSON.parse(localStorage.getItem('my_ai_chats')) || [];
         let currentChatId = null;
 
-        // --- ФУНКЦИЯ СОЗДАНИЯ ПРИВЕТСТВИЯ ---
         function createWelcomeScreen() {
             const welcomeDiv = document.createElement('div');
             welcomeDiv.className = 'center-text';
@@ -394,6 +468,7 @@
             const newTheme = isDark ? 'light' : 'dark';
             document.body.setAttribute('data-theme', newTheme);
             localStorage.setItem('my_ai_theme', newTheme);
+            updateTextStyles(); // Обновляем цвета при смене темы
         }
 
         function applyBackground(base64Image) {
@@ -464,13 +539,10 @@
             if (!currentChatId) { startNewChat(); }
             const chat = allChats.find(c => c.id === currentChatId);
             
-            // --- ЖЕЛЕЗОБЕТОННОЕ УДАЛЕНИЕ ПРИВЕТСТВИЯ ---
             if (chat.messages.length === 0) {
                 chat.title = text ? (text.substring(0, 20) + (text.length > 20 ? '...' : '')) : "Фото";
                 chat.mode = currentMode; 
                 lockModes(currentMode); 
-                
-                // Очищаем контейнер полностью (удаляем приветствие и подсказки)
                 chatContainer.innerHTML = ''; 
             }
             
@@ -482,7 +554,6 @@
             chat.messages.push(userMessage);
             saveChats();
             
-            // Рисуем сообщение пользователя (оно будет первым в пустом контейнере)
             renderMessageBubble(userMessage.text, 'user', null, userMessage.images);
             
             messageInput.value = '';
@@ -516,7 +587,7 @@
                     historyToSend.unshift({
                         role: msg.sender === 'user' ? 'user' : 'assistant',
                         content: msg.text,
-                        images: msg.images
+                        images: msg.images ? msg.images.map(img => img.startsWith('data:') ? img : `data:image/jpeg;base64,${img}`) : null
                     });
                     currentLength += msgLength;
                 }
@@ -525,7 +596,7 @@
                     message: text, 
                     type: requestType, 
                     history: historyToSend,
-                    currentImages: userMessage.images
+                    currentImages: userMessage.images ? userMessage.images.map(img => img.startsWith('data:') ? img : `data:image/jpeg;base64,${img}`) : null
                 };
 
                 const response = await fetch(WORKER_URL, {
@@ -665,6 +736,16 @@
                 });
             }
             chatContainer.appendChild(div);
+            
+            // Применяем текущие стили к новому сообщению
+            div.style.color = getComputedStyle(document.documentElement).getPropertyValue('--user-text-color').trim() || textColor;
+            if (currentFont === 'cursive') div.style.fontFamily = 'cursive';
+            else if (currentFont === 'mono') div.style.fontFamily = 'monospace';
+            else if (currentFont === 'bold') { div.style.fontFamily = 'inherit'; div.style.fontWeight = '900'; }
+            
+            if (isGlowActive) div.style.textShadow = `0 0 5px ${div.style.color}, 0 0 10px ${div.style.color}`;
+            else if (isOutlineActive) div.style.textShadow = `1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000`;
+
             scrollToBottom();
         }
 
