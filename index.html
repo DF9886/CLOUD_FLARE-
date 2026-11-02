@@ -90,12 +90,10 @@
         .chat-container.has-bg::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 0; pointer-events: none; }
         .chat-container.has-bg .message, .chat-container.has-bg .center-text { position: relative; z-index: 1; }
 
-        /* Шапка */
         header { background-color: var(--header-bg); padding: 15px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; transition: background 0.3s, border-color 0.3s; flex-shrink: 0; }
         .menu-btn { cursor: pointer; font-size: 24px; user-select: none; color: var(--text-color); }
         .user-icon { width: 30px; height: 30px; background-color: var(--accent-color); border-radius: 50%; transition: background 0.3s; }
         
-        /* Боковое меню */
         .sidebar { position: fixed; top: 0; left: -320px; width: 320px; height: 100%; background-color: var(--header-bg); z-index: 20; transition: left 0.3s ease, background 0.3s; padding: 20px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 15; display: none; }
@@ -112,58 +110,29 @@
         .new-chat-btn { background: var(--btn-bg); color: var(--btn-text); border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-bottom: 20px; width: 100%; font-weight: bold; transition: opacity 0.2s, background 0.3s; }
         .new-chat-btn:hover { opacity: 0.9; }
 
-        /* Блок настроек в меню */
-        .sidebar-settings-link {
-            margin-top: auto;
-            padding: 15px;
-            background: var(--ai-msg-bg);
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+        .sidebar-settings-link { margin-top: auto; padding: 15px; background: var(--ai-msg-bg); border-radius: 10px; cursor: pointer; text-align: center; margin-bottom: 15px; font-weight: bold; }
         .sidebar-settings-link:hover { background: var(--border-color); }
 
-        /* Ссылки и контакты */
         .tg-link { display: block; text-align: center; color: var(--accent-color); text-decoration: none; margin-bottom: 10px; font-weight: bold; }
         .contact-info { font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.4; margin-top: 10px; }
 
-        /* --- ОКНО НАСТРОЕК НА ВЕСЬ ЭКРАН --- */
-        .settings-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color); z-index: 50;
-            display: none; flex-direction: column;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
+        .settings-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: 50; display: none; flex-direction: column; overflow-y: auto; transition: transform 0.3s ease; }
         .settings-screen.open { display: flex; }
-        
-        .settings-header {
-            background-color: var(--header-bg); padding: 15px 20px;
-            font-size: 20px; font-weight: bold;
-            border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center;
-            position: sticky; top: 0; z-index: 10;
-        }
+        .settings-header { background-color: var(--header-bg); padding: 15px 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; position: sticky; top: 0; z-index: 10; }
         .back-btn { cursor: pointer; font-size: 28px; margin-right: 15px; user-select: none; }
-        
         .settings-content { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-        
         .settings-group { background: var(--header-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
         .settings-group h3 { margin-top: 0; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
 
         .theme-toggle-btn, .bg-upload-btn { background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 12px; border-radius: 8px; cursor: pointer; width: 100%; transition: all 0.3s; text-align: center; display: block; margin-bottom: 10px; font-size: 15px;}
         .theme-toggle-btn:hover, .bg-upload-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
-        /* Режимы */
         .mode-selector { display: flex; flex-direction: column; gap: 8px; }
         .mode-option { padding: 12px; border: 1px solid var(--mode-border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 15px; background-color: var(--mode-bg); color: var(--text-color); transition: all 0.2s; }
         .mode-option.active { background-color: var(--mode-active-bg); color: var(--mode-active-text); border-color: var(--mode-active-bg); font-weight: bold; }
         .mode-option.disabled { background-color: var(--mode-disabled-bg) !important; color: var(--mode-disabled-text) !important; border-color: var(--mode-border) !important; cursor: not-allowed; opacity: 0.6; }
         .mode-info { font-size: 12px; color: var(--text-muted); margin-top: 8px; text-align: center; display: none; }
 
-        /* Стили шрифтов */
         .font-selector { display: flex; flex-wrap: wrap; gap: 8px; }
         .font-option { flex: 1; min-width: 45%; padding: 12px; border: 1px solid var(--mode-border); border-radius: 8px; cursor: pointer; text-align: center; font-size: 14px; background-color: var(--mode-bg); color: var(--text-color); transition: all 0.2s; }
         .font-option.active { background-color: var(--mode-active-bg); color: var(--mode-active-text); border-color: var(--mode-active-bg); font-weight: bold; }
@@ -178,7 +147,7 @@
         .color-picker-container label { font-size: 15px; }
         input[type="color"] { border: none; width: 50px; height: 35px; cursor: pointer; background: none; }
 
-        /* --- ЧАТ --- */
+        /* --- ЧАТ С ЭФФЕКТОМ ВСПЛЫТИЯ --- */
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; position: relative; }
         .center-text { text-align: center; margin-top: 10vh; }
         .center-text h1 { font-size: 28px; margin-bottom: 10px; color: var(--text-color); }
@@ -190,11 +159,21 @@
         
         .warning-text { margin-top: 25px; font-size: 13px; color: var(--warning-color); background-color: rgba(128, 128, 128, 0.1); padding: 10px 15px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; text-align: left; max-width: 350px; line-height: 1.4; }
         
-        .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; animation: fadeIn 0.3s ease; backdrop-filter: blur(5px); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .message.user { background-color: var(--user-msg-bg); color: var(--user-msg-text); align-self: flex-end; border-bottom-right-radius: 4px; opacity: 0.95; }
-        .message.ai { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); align-self: flex-start; border-bottom-left-radius: 4px; opacity: 0.95; width: 100%; }
-        .message.loading { color: var(--text-muted); font-style: italic; align-self: flex-start; }
+        .message { 
+            max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; backdrop-filter: blur(5px);
+            /* Эффект всплытия */
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: opacity 0.5s ease, transform 0.5s ease; 
+        }
+        .message.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        .message.user { background-color: var(--user-msg-bg); color: var(--user-msg-text); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message.ai { background-color: var(--ai-msg-bg); color: var(--ai-msg-text); align-self: flex-start; border-bottom-left-radius: 4px; width: 100%; }
+        .message.loading { color: var(--text-muted); font-style: italic; align-self: flex-start; opacity: 1; transform: none; }
         
         .message.ai img { max-width: 100%; border-radius: 10px; display: block; margin-top: 10px; border: 1px solid var(--border-color); }
         .image-actions { display: flex; gap: 10px; margin-top: 10px; }
@@ -228,29 +207,25 @@
 </head>
 <body>
 
-    <!-- Оверлей для меню -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Боковое меню -->
     <div class="sidebar" id="sidebar">
         <button class="new-chat-btn" onclick="startNewChat()">+ Новый чат</button>
         
         <h3>Чаты</h3>
         <div id="chat-history-list" style="flex: 1; overflow-y: auto;"></div>
         
-        <!-- Ссылка на настройки -->
+        <!-- Убраны смайлики -->
         <div class="sidebar-settings-link" onclick="openSettings()">
-            ⚙️ Настройки
+            Настройки
         </div>
         
-        <!-- Ссылки и контакты -->
         <a href="https://t.me/Houndler" target="_blank" class="tg-link">Наш Telegram-канал</a>
         <div class="contact-info">
             Чтобы связаться с нами, напишите в сообщения канала (ссылка сверху)
         </div>
     </div>
 
-    <!-- Экран настроек -->
     <div class="settings-screen" id="settings-screen">
         <div class="settings-header">
             <div class="back-btn" onclick="closeSettings()">←</div>
@@ -258,28 +233,25 @@
         </div>
         
         <div class="settings-content">
-            <!-- Группа: Внешний вид -->
             <div class="settings-group">
                 <h3>Внешний вид</h3>
-                <button class="theme-toggle-btn" onclick="toggleTheme()">🌓 Сменить тему</button>
-                
+                <!-- Убраны смайлики -->
+                <button class="theme-toggle-btn" onclick="toggleTheme()">Сменить тему</button>
                 <input type="file" id="bg-upload" accept="image/*" style="display: none;" onchange="handleBgUpload(event)">
-                <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">🖼️ Добавить свои обои</button>
+                <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">Добавить свои обои</button>
                 <button class="bg-upload-btn" onclick="resetBg()" style="font-size: 12px; opacity: 0.7;">Сбросить обои</button>
             </div>
 
-            <!-- Группа: Режимы -->
             <div class="settings-group">
                 <h3>Режимы</h3>
                 <div class="mode-selector" id="mode-selector">
-                    <div class="mode-option" id="mode-standard" onclick="setMode('standard')">📝 Стандарт (только текст)</div>
-                    <div class="mode-option" id="mode-generator" onclick="setMode('generator')">🎨 Генератор (только фото)</div>
-                    <div class="mode-option" id="mode-5050" onclick="setMode('5050')">⚖️ 50/50 (смешанный)</div>
+                    <div class="mode-option" id="mode-standard" onclick="setMode('standard')">Стандарт (только текст)</div>
+                    <div class="mode-option" id="mode-generator" onclick="setMode('generator')">Генератор (только фото)</div>
+                    <div class="mode-option" id="mode-5050" onclick="setMode('5050')">50/50 (смешанный)</div>
                 </div>
                 <div class="mode-info" id="mode-lock-info">Режим заблокирован для этого чата (создайте новый)</div>
             </div>
 
-            <!-- Группа: Стиль текста -->
             <div class="settings-group">
                 <h3>Стиль текста</h3>
                 <div class="font-selector">
@@ -289,8 +261,8 @@
                     <div class="font-option font-bold" id="font-bold" onclick="setFont('bold')">Жирный</div>
                 </div>
 
-                <button class="effect-btn" id="effect-glow" onclick="toggleEffect('glow')">✨ Включить свечение</button>
-                <button class="effect-btn" id="effect-outline" onclick="toggleEffect('outline')">🖍 Включить обводку</button>
+                <button class="effect-btn" id="effect-glow" onclick="toggleEffect('glow')">Включить свечение</button>
+                <button class="effect-btn" id="effect-outline" onclick="toggleEffect('outline')">Включить обводку</button>
 
                 <div class="color-picker-container">
                     <label>Цвет текста:</label>
@@ -300,22 +272,20 @@
         </div>
     </div>
 
-    <!-- Шапка чата -->
     <header>
         <div class="menu-btn" onclick="toggleSidebar()">☰</div>
         <div>Houndler</div>
         <div class="user-icon"></div>
     </header>
 
-    <!-- Контейнер чата -->
     <div class="chat-container" id="chat-container"></div>
 
-    <!-- Поле ввода -->
     <div class="input-area">
         <div class="selected-images-preview" id="preview-container"></div>
         
         <div class="input-wrapper">
             <input type="file" id="image-input" accept="image/*" multiple style="display: none;" onchange="handleImageSelect(event)">
+            <!-- Оставил скрепку для удобства, так как это функциональная кнопка -->
             <button class="attach-btn" onclick="document.getElementById('image-input').click()">📎</button>
             
             <input type="text" id="message-input" placeholder="Напишите сообщение..." onkeypress="handleKeyPress(event)">
@@ -334,7 +304,6 @@
         const imageInput = document.getElementById('image-input');
         const previewContainer = document.getElementById('preview-container');
         const toast = document.getElementById('toast');
-        
         const settingsScreen = document.getElementById('settings-screen');
         const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebar-overlay');
@@ -342,21 +311,28 @@
 
         let selectedImages = [];
 
-        // --- УПРАВЛЕНИЕ ОКНАМИ ---
-        function openSettings() {
-            settingsScreen.classList.add('open');
-            sidebar.classList.remove('open');
-            sidebarOverlay.classList.remove('open');
-        }
+        // --- ЭФФЕКТ ВСПЛЫТИЯ (IntersectionObserver) ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible'); // Появляется снизу
+                } else {
+                    // Если уходит вверх, можно убирать класс (эффект "тонет"), 
+                    // но чтобы текст не исчезал навсегда, мы оставляем его видимым.
+                    // Если хотите, чтобы он тускнел при прокрутке вверх, раскомментируйте строку ниже:
+                    // entry.target.classList.remove('visible'); 
+                }
+            });
+        }, { threshold: 0.1 });
 
-        function closeSettings() {
-            settingsScreen.classList.remove('open');
+        function observeMessage(div) {
+            observer.observe(div);
         }
+        // ------------------------------------------------
 
-        function toggleSidebar() {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('open');
-        }
+        function openSettings() { settingsScreen.classList.add('open'); sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
+        function closeSettings() { settingsScreen.classList.remove('open'); }
+        function toggleSidebar() { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('open'); }
 
         // --- ЛОГИКА РЕЖИМОВ ---
         let currentMode = localStorage.getItem('my_ai_mode') || 'standard';
@@ -384,7 +360,7 @@
             setMode(currentMode);
         }
 
-        // --- ЛОГИКА СТИЛЕЙ ТЕКСТА ---
+        // --- ЛОГИКА СТИЛЕЙ ---
         let currentFont = 'default';
         let isGlowActive = false;
         let isOutlineActive = false;
@@ -398,20 +374,12 @@
         }
 
         function toggleEffect(effect) {
-            if (effect === 'glow') {
-                isGlowActive = !isGlowActive;
-                document.getElementById('effect-glow').classList.toggle('active', isGlowActive);
-            } else if (effect === 'outline') {
-                isOutlineActive = !isOutlineActive;
-                document.getElementById('effect-outline').classList.toggle('active', isOutlineActive);
-            }
+            if (effect === 'glow') { isGlowActive = !isGlowActive; document.getElementById('effect-glow').classList.toggle('active', isGlowActive); }
+            else if (effect === 'outline') { isOutlineActive = !isOutlineActive; document.getElementById('effect-outline').classList.toggle('active', isOutlineActive); }
             updateTextStyles();
         }
 
-        function setTextColor(color) {
-            textColor = color;
-            updateTextStyles();
-        }
+        function setTextColor(color) { textColor = color; updateTextStyles(); }
 
         function updateTextStyles() {
             const root = document.documentElement;
@@ -436,7 +404,6 @@
             });
         }
 
-        // Инициализация
         if (!modeIsLocked) setMode(currentMode);
         setFont('default');
 
@@ -464,7 +431,7 @@
                 
                 <div style="text-align: center;">
                     <div class="warning-text">
-                        <span>⚠️</span>
+                        <span>⚠</span>
                         <span>Не советуем обновлять сайт или закрывать вкладку, иначе ваши чаты удалятся.</span>
                     </div>
                 </div>
@@ -484,7 +451,7 @@
                 titleSpan.textContent = chat.title;
                 const delBtn = document.createElement('button');
                 delBtn.className = 'delete-btn';
-                delBtn.innerHTML = '🗑️';
+                delBtn.innerHTML = '×'; // Убрал смайлик корзины, заменил на крестик
                 itemDiv.onclick = (e) => { if (e.target !== delBtn) loadChat(chat.id); };
                 delBtn.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); };
                 itemDiv.appendChild(titleSpan);
@@ -736,10 +703,10 @@
                 const actions = document.createElement('div');
                 actions.className = 'image-actions';
                 const downloadBtn = document.createElement('button');
-                downloadBtn.textContent = '⬇️ Скачать';
+                downloadBtn.textContent = 'Скачать';
                 downloadBtn.onclick = () => { const a = document.createElement('a'); a.href = imageUrl; a.download = 'ai-image.jpg'; a.click(); };
                 const shareBtn = document.createElement('button');
-                shareBtn.textContent = '🔗 Поделиться';
+                shareBtn.textContent = 'Поделиться';
                 shareBtn.onclick = async () => {
                     try {
                         const blob = await (await fetch(imageUrl)).blob();
@@ -785,12 +752,12 @@
                         actions.className = 'code-actions';
                         
                         const copyBtn = document.createElement('button');
-                        copyBtn.innerHTML = '📋 Копировать';
+                        copyBtn.innerHTML = 'Копировать'; // Убран смайлик
                         copyBtn.onclick = () => {
                             navigator.clipboard.writeText(codeText).then(() => { showToast(); });
                         };
                         const downloadBtn = document.createElement('button');
-                        downloadBtn.innerHTML = '⬇️ Скачать';
+                        downloadBtn.innerHTML = 'Скачать'; // Убран смайлик
                         downloadBtn.onclick = () => {
                             const blob = new Blob([codeText], { type: 'text/plain' });
                             const a = document.createElement('a');
@@ -820,6 +787,7 @@
             }
             chatContainer.appendChild(div);
             
+            // Применяем стили
             div.style.color = getComputedStyle(document.documentElement).getPropertyValue('--user-text-color').trim() || textColor;
             if (currentFont === 'cursive') div.style.fontFamily = 'cursive';
             else if (currentFont === 'mono') div.style.fontFamily = 'monospace';
@@ -827,6 +795,9 @@
             
             if (isGlowActive) div.style.textShadow = `0 0 5px ${div.style.color}, 0 0 10px ${div.style.color}`;
             else if (isOutlineActive) div.style.textShadow = `1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000`;
+
+            // Включаем эффект всплытия
+            observeMessage(div);
 
             scrollToBottom();
         }
