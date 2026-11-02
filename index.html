@@ -161,7 +161,6 @@
         
         .message { 
             max-width: 85%; padding: 12px 16px; border-radius: 18px; margin-bottom: 15px; line-height: 1.4; font-size: 16px; word-wrap: break-word; backdrop-filter: blur(5px);
-            /* Эффект всплытия */
             opacity: 0; 
             transform: translateY(20px); 
             transition: opacity 0.5s ease, transform 0.5s ease; 
@@ -215,7 +214,6 @@
         <h3>Чаты</h3>
         <div id="chat-history-list" style="flex: 1; overflow-y: auto;"></div>
         
-        <!-- Убраны смайлики -->
         <div class="sidebar-settings-link" onclick="openSettings()">
             Настройки
         </div>
@@ -235,7 +233,6 @@
         <div class="settings-content">
             <div class="settings-group">
                 <h3>Внешний вид</h3>
-                <!-- Убраны смайлики -->
                 <button class="theme-toggle-btn" onclick="toggleTheme()">Сменить тему</button>
                 <input type="file" id="bg-upload" accept="image/*" style="display: none;" onchange="handleBgUpload(event)">
                 <button class="bg-upload-btn" onclick="document.getElementById('bg-upload').click()">Добавить свои обои</button>
@@ -285,7 +282,6 @@
         
         <div class="input-wrapper">
             <input type="file" id="image-input" accept="image/*" multiple style="display: none;" onchange="handleImageSelect(event)">
-            <!-- Оставил скрепку для удобства, так как это функциональная кнопка -->
             <button class="attach-btn" onclick="document.getElementById('image-input').click()">📎</button>
             
             <input type="text" id="message-input" placeholder="Напишите сообщение..." onkeypress="handleKeyPress(event)">
@@ -311,16 +307,11 @@
 
         let selectedImages = [];
 
-        // --- ЭФФЕКТ ВСПЛЫТИЯ (IntersectionObserver) ---
+        // --- ЭФФЕКТ ВСПЛЫТИЯ ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible'); // Появляется снизу
-                } else {
-                    // Если уходит вверх, можно убирать класс (эффект "тонет"), 
-                    // но чтобы текст не исчезал навсегда, мы оставляем его видимым.
-                    // Если хотите, чтобы он тускнел при прокрутке вверх, раскомментируйте строку ниже:
-                    // entry.target.classList.remove('visible'); 
+                    entry.target.classList.add('visible');
                 }
             });
         }, { threshold: 0.1 });
@@ -328,7 +319,6 @@
         function observeMessage(div) {
             observer.observe(div);
         }
-        // ------------------------------------------------
 
         function openSettings() { settingsScreen.classList.add('open'); sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
         function closeSettings() { settingsScreen.classList.remove('open'); }
@@ -407,8 +397,13 @@
         if (!modeIsLocked) setMode(currentMode);
         setFont('default');
 
+        // --- УСТАНОВКА ТЕМЫ ПО УМОЛЧАНИЮ (БЕЛАЯ) ---
         const savedTheme = localStorage.getItem('my_ai_theme');
-        if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); }
+        if (savedTheme) {
+            document.body.setAttribute('data-theme', savedTheme);
+        } else {
+            document.body.setAttribute('data-theme', 'light'); // По умолчанию светлая
+        }
 
         const savedBg = localStorage.getItem('my_ai_bg');
         if (savedBg) { applyBackground(savedBg); }
@@ -451,7 +446,7 @@
                 titleSpan.textContent = chat.title;
                 const delBtn = document.createElement('button');
                 delBtn.className = 'delete-btn';
-                delBtn.innerHTML = '×'; // Убрал смайлик корзины, заменил на крестик
+                delBtn.innerHTML = '×'; 
                 itemDiv.onclick = (e) => { if (e.target !== delBtn) loadChat(chat.id); };
                 delBtn.onclick = (e) => { e.stopPropagation(); deleteChat(chat.id); };
                 itemDiv.appendChild(titleSpan);
@@ -752,12 +747,12 @@
                         actions.className = 'code-actions';
                         
                         const copyBtn = document.createElement('button');
-                        copyBtn.innerHTML = 'Копировать'; // Убран смайлик
+                        copyBtn.innerHTML = 'Копировать';
                         copyBtn.onclick = () => {
                             navigator.clipboard.writeText(codeText).then(() => { showToast(); });
                         };
                         const downloadBtn = document.createElement('button');
-                        downloadBtn.innerHTML = 'Скачать'; // Убран смайлик
+                        downloadBtn.innerHTML = 'Скачать';
                         downloadBtn.onclick = () => {
                             const blob = new Blob([codeText], { type: 'text/plain' });
                             const a = document.createElement('a');
@@ -787,7 +782,6 @@
             }
             chatContainer.appendChild(div);
             
-            // Применяем стили
             div.style.color = getComputedStyle(document.documentElement).getPropertyValue('--user-text-color').trim() || textColor;
             if (currentFont === 'cursive') div.style.fontFamily = 'cursive';
             else if (currentFont === 'mono') div.style.fontFamily = 'monospace';
@@ -796,7 +790,6 @@
             if (isGlowActive) div.style.textShadow = `0 0 5px ${div.style.color}, 0 0 10px ${div.style.color}`;
             else if (isOutlineActive) div.style.textShadow = `1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000`;
 
-            // Включаем эффект всплытия
             observeMessage(div);
 
             scrollToBottom();
